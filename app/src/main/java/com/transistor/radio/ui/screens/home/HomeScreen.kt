@@ -3,7 +3,6 @@ package com.transistor.radio.ui.screens.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -23,7 +22,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -57,7 +55,7 @@ fun HomeScreen(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 160.dp)
+        contentPadding = PaddingValues(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 160.dp)
     ) {
         item {
             Column(
@@ -94,7 +92,7 @@ fun HomeScreen(
                 Text(
                     text = stringResource(R.string.recently_played),
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(horizontal = 20.dp, top = 8.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(start = 20.dp, top = 8.dp, end = 20.dp, bottom = 8.dp)
                 )
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 20.dp),
@@ -111,7 +109,7 @@ fun HomeScreen(
         if (count == 0) {
             item {
                 EmptyHomeState(
-                    onSearchClick = { /* Navigate via navController if needed */ },
+                    onSearchClick = { },
                     onPasteClick = { }
                 )
             }
@@ -120,7 +118,7 @@ fun HomeScreen(
                 Text(
                     text = stringResource(R.string.your_stations),
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(horizontal = 20.dp, top = 8.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(start = 20.dp, top = 8.dp, end = 20.dp, bottom = 8.dp)
                 )
             }
             items(stations, key = { it.id }) { station ->
@@ -236,6 +234,5 @@ fun EmptyHomeState(onSearchClick: () -> Unit, onPasteClick: () -> Unit) {
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
         Spacer(modifier = Modifier.height(24.dp))
-        // In a real implementation, these would trigger navigation
     }
 }

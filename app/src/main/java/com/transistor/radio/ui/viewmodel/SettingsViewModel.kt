@@ -12,6 +12,7 @@ import com.transistor.radio.domain.model.Station
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -31,7 +32,7 @@ class SettingsViewModel @Inject constructor(
     fun exportLibrary(uri: Uri) {
         viewModelScope.launch {
             try {
-                val stations = repository.getAllStations().value
+                val stations = repository.getAllStations().first()
                 val json = gson.toJson(stations)
                 getApplication<Application>().contentResolver.openOutputStream(uri)?.use { out ->
                     out.write(json.toByteArray())

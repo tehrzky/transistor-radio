@@ -105,6 +105,7 @@ dependencies {
 
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.8.0")
 
     // JSON
     implementation("com.google.code.gson:gson:2.11.0")
