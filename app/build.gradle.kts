@@ -4,7 +4,6 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.dagger.hilt.android")
-    id("kotlin-kapt")
 }
 
 android {
@@ -91,9 +90,9 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
 
-    // Hilt
+    // Hilt — use KSP, NOT Kapt
     implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-compiler:2.51.1")
+    ksp("com.google.dagger:hilt-compiler:2.51.1")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
@@ -105,10 +104,15 @@ dependencies {
 
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.8.0")
 
     // JSON
     implementation("com.google.code.gson:gson:2.11.0")
+
+    // Coroutines Guava for ListenableFuture.await()
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.8.0")
+
+    // Startup (needed by Media3)
+    implementation("androidx.startup:startup-runtime:1.1.1")
 
     // Debug
     debugImplementation("androidx.compose.ui:ui-tooling")

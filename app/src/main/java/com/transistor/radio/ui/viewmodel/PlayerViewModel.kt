@@ -35,7 +35,12 @@ class PlayerViewModel @Inject constructor(
         val sessionToken = SessionToken(context, ComponentName(context, PlaybackService::class.java))
         mediaControllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
         viewModelScope.launch {
-            mediaController = mediaControllerFuture?.await()
+            try {
+                mediaController = mediaControllerFuture?.await()
+            } catch (e: Exception) {
+                // MediaController creation failed — app can still function without it
+                e.printStackTrace()
+            }
         }
     }
 

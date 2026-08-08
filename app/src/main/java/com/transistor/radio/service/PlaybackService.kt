@@ -15,6 +15,8 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.transistor.radio.MainActivity
 import com.transistor.radio.R
+import com.transistor.radio.data.repository.StationRepository
+import com.transistor.radio.domain.model.PlaybackState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -25,7 +27,7 @@ class PlaybackService : MediaSessionService() {
     private var exoPlayer: ExoPlayer? = null
 
     @Inject
-    lateinit var repository: com.transistor.radio.data.repository.StationRepository
+    lateinit var repository: StationRepository
 
     companion object {
         const val CHANNEL_ID = "transistor_playback_channel"
@@ -51,26 +53,26 @@ class PlaybackService : MediaSessionService() {
                     override fun onPlaybackStateChanged(playbackState: Int) {
                         when (playbackState) {
                             Player.STATE_BUFFERING ->
-                                repository.setPlaybackState(com.transistor.radio.domain.model.PlaybackState.BUFFERING)
+                                repository.setPlaybackState(PlaybackState.BUFFERING)
                             Player.STATE_READY ->
-                                if (isPlaying) repository.setPlaybackState(com.transistor.radio.domain.model.PlaybackState.PLAYING)
+                                if (isPlaying) repository.setPlaybackState(PlaybackState.PLAYING)
                             Player.STATE_ENDED ->
-                                repository.setPlaybackState(com.transistor.radio.domain.model.PlaybackState.STOPPED)
+                                repository.setPlaybackState(PlaybackState.STOPPED)
                             Player.STATE_IDLE ->
-                                repository.setPlaybackState(com.transistor.radio.domain.model.PlaybackState.STOPPED)
+                                repository.setPlaybackState(PlaybackState.STOPPED)
                         }
                     }
 
                     override fun onIsPlayingChanged(isPlaying: Boolean) {
                         if (isPlaying) {
-                            repository.setPlaybackState(com.transistor.radio.domain.model.PlaybackState.PLAYING)
+                            repository.setPlaybackState(PlaybackState.PLAYING)
                         } else if (playbackState != Player.STATE_BUFFERING) {
-                            repository.setPlaybackState(com.transistor.radio.domain.model.PlaybackState.PAUSED)
+                            repository.setPlaybackState(PlaybackState.PAUSED)
                         }
                     }
 
                     override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
-                        repository.setPlaybackState(com.transistor.radio.domain.model.PlaybackState.ERROR)
+                        repository.setPlaybackState(PlaybackState.ERROR)
                     }
                 })
             }
