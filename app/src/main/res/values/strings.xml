@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Transistor Radio</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_categories">Categories</string>
+    <string name="nav_settings">Settings</string>
+    <string name="search_hint">Filter stations…</string>
+    <string name="recently_played">Recently Played</string>
+    <string name="your_stations">Your Stations</string>
+    <string name="empty_title">No stations yet</string>
+    <string name="empty_subtitle">Search Radio-Browser or paste a stream link to get started.</string>
+    <string name="search_radio_browser">Search Radio-Browser</string>
+    <string name="paste_stream_link">Paste Stream Link</string>
+    <string name="search_api_hint">Search radio-browser.info…</string>
+    <string name="direct_url_hint">Direct stream URL</string>
+    <string name="add_station">Add Station</string>
+    <string name="categories">Categories</string>
+    <string name="settings">Settings</string>
+    <string name="export_library">Export Library</string>
+    <string name="import_library">Import Library</string>
+    <string name="buffer_size">Buffer Size</string>
+    <string name="theme">Theme</string>
+    <string name="bitrate">%d kbps</string>
+    <string name="codec">%s</string>
+    <string name="unknown_station">Unknown Station</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="stop">Stop</string>
+</resources>
