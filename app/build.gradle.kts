@@ -78,11 +78,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.3")
 
-    // Media3
-    val media3Version = "1.3.1"
-    implementation("androidx.media3:media3-exoplayer:$media3Version")
-    implementation("androidx.media3:media3-session:$media3Version")
-    implementation("androidx.media3:media3-common:$media3Version")
+    // ExoPlayer (audio only, no session service)
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
+    implementation("androidx.media3:media3-common:1.3.1")
 
     // Room
     val roomVersion = "2.6.1"
@@ -90,7 +88,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
 
-    // Hilt — use KSP, NOT Kapt
+    // Hilt — KSP
     implementation("com.google.dagger:hilt-android:2.51.1")
     ksp("com.google.dagger:hilt-compiler:2.51.1")
 
@@ -107,12 +105,6 @@ dependencies {
 
     // JSON
     implementation("com.google.code.gson:gson:2.11.0")
-
-    // Coroutines Guava for ListenableFuture.await()
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.8.0")
-
-    // Startup (needed by Media3)
-    implementation("androidx.startup:startup-runtime:1.1.1")
 
     // Debug
     debugImplementation("androidx.compose.ui:ui-tooling")

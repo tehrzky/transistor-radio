@@ -1,20 +1,16 @@
 package com.transistor.radio.ui.viewmodel
 
 import android.app.Application
-import android.content.ComponentName
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
-import androidx.media3.session.MediaController
-import androidx.media3.session.SessionToken
-import com.google.common.util.concurrent.ListenableFuture
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import com.transistor.radio.data.repository.StationRepository
 import com.transistor.radio.domain.model.PlaybackState
 import com.transistor.radio.domain.model.Station
-import com.transistor.radio.service.PlaybackService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,57 +23,66 @@ class PlayerViewModel @Inject constructor(
     val currentStation: StateFlow<Station?> = repository.currentStation
     val playbackState: StateFlow<PlaybackState> = repository.playbackState
 
-    private var mediaControllerFuture: ListenableFuture<MediaController>? = null
-    private var mediaController: MediaController? = null
+    private val exoPlayer: ExoPlayer = ExoPlayer.Builder(application)
+        .build()
+        .apply {
+            addListener(object : Player.Listener {
+                override fun onPlaybackStateChanged(state: Int) {
+                    when (state) {
+                        Player.STATE_BUFFERING ->
+                            repository.setPlaybackState(PlaybackState.BUFFERING)
+                        Player.STATE_READY ->
+                            if (isPlaying) repository.setPlaybackState(PlaybackState.PLAYING)
+                        Player.STATE_ENDED ->
+                            repository.setPlaybackState(PlaybackState.STOPPED)
+                        Player.STATE_IDLE ->
+                            repository.setPlaybackState(PlaybackState.STOPPED)
+                    }
+                }
 
-    init {
-        val context = getApplication<Application>()
-        val sessionToken = SessionToken(context, ComponentName(context, PlaybackService::class.java))
-        mediaControllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
-        viewModelScope.launch {
-            try {
-                mediaController = mediaControllerFuture?.await()
-            } catch (e: Exception) {
-                // MediaController creation failed — app can still function without it
-                e.printStackTrace()
-            }
+                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                    if (isPlaying) {
+                        repository.setPlaybackState(PlaybackState.PLAYING)
+                    } else if (playbackState != Player.STATE_BUFFERING) {
+                        repository.setPlaybackState(PlaybackState.PAUSED)
+                    }
+                }
+
+                override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+                    repository.setPlaybackState(PlaybackState.ERROR)
+                }
+            })
         }
-    }
 
     fun playStation(station: Station) {
         viewModelScope.launch {
             repository.setCurrentStation(station)
-            val mc = mediaController ?: return@launch
-            mc.setMediaItem(MediaItem.fromUri(station.streamUrl))
-            mc.prepare()
-            mc.play()
+            exoPlayer.setMediaItem(MediaItem.fromUri(station.streamUrl))
+            exoPlayer.prepare()
+            exoPlayer.play()
         }
     }
 
     fun togglePlayPause() {
-        val mc = mediaController ?: return
-        if (mc.isPlaying) {
-            mc.pause()
+        if (exoPlayer.isPlaying) {
+            exoPlayer.pause()
         } else {
-            if (mc.currentMediaItem == null) {
+            if (exoPlayer.currentMediaItem == null) {
                 currentStation.value?.let { playStation(it) }
             } else {
-                mc.play()
+                exoPlayer.play()
             }
         }
     }
 
     fun stop() {
-        val mc = mediaController ?: return
-        mc.stop()
-        mc.clearMediaItems()
+        exoPlayer.stop()
+        exoPlayer.clearMediaItems()
         repository.setPlaybackState(PlaybackState.STOPPED)
     }
 
     override fun onCleared() {
-        mediaControllerFuture?.let {
-            MediaController.releaseFuture(it)
-        }
+        exoPlayer.release()
         super.onCleared()
     }
 }
