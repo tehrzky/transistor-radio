@@ -20,12 +20,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import com.transistor.radio.ui.components.RootScreen
 import com.transistor.radio.ui.theme.TransistorRadioTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     CrashLogDialog()
-                    SafeRoot()
+                    RootScreen()
                 }
             }
         }
@@ -88,27 +88,5 @@ private fun CrashLogDialog() {
                 }) { Text("Dismiss") }
             }
         )
-    }
-}
-
-@Composable
-private fun SafeRoot() {
-    val result = runCatching {
-        com.transistor.radio.ui.components.RootScreen()
-        null
-    }.exceptionOrNull()
-
-    if (result != null) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "RootScreen crashed: ${result.javaClass.simpleName}: ${result.message}",
-                color = MaterialTheme.colorScheme.error
-            )
-        }
     }
 }
