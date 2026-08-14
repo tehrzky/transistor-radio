@@ -1,4 +1,4 @@
-package com.tehrzky.transistorradio
+package com.transistor.radio
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
